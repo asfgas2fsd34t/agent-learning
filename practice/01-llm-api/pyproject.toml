@@ -1,0 +1,19 @@
+[project]
+name = "llm-api-practice"
+version = "0.1.0"
+description = "Agent learning practice: call an OpenAI-compatible LLM API"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "openai>=1.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.scripts]
+llm-chat = "llm_api_practice.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

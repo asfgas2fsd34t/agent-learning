@@ -41,3 +41,20 @@
 ### 后端基础
 
 - [FastAPI 学习笔记](notes/FastAPI学习笔记.md)
+
+## 编程实践
+
+- [练习 01：调用大模型 API](practice/01-llm-api/README.md)
+- [练习 02：手动实现 Tool Calling](practice/02-tool-calling/README.md)
+
+所有编程练习通过 `uv workspace` 共用根目录的 Python 3.11 虚拟环境和依赖锁文件：
+
+```bash
+uv sync --all-packages
+```
+
+PyCharm 统一选择：
+
+```text
+/Users/junjiezou/project/agent-learning/.venv/bin/python
+```
