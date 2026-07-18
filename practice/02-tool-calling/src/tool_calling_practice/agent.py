@@ -15,14 +15,7 @@ def answer_question(
     settings: Settings,
     *,
     client: Any | None = None,
-    max_steps: int = 5,
-    max_same_call: int = 2,
 ) -> str:
-    if max_steps < 1:
-        raise ValueError("max_steps 必须大于 0")
-    if max_same_call < 1:
-        raise ValueError("max_same_call 必须大于 0")
-
     if client is None:
         from openai import OpenAI
 
@@ -35,74 +28,66 @@ def answer_question(
         {"role": "system", "content": SYSTEM_PROMPT},
         {"role": "user", "content": question},
     ]
-    call_counts: dict[str, int] = {}
 
-    for _ in range(max_steps):
-        response = client.chat.completions.create(
-            model=settings.model,
-            messages=messages,
-            tools=TOOLS,
-            tool_choice="auto",
-        )
-        assistant_message = response.choices[0].message
-        tool_calls = assistant_message.tool_calls
+    first_response = client.chat.completions.create(
+        model=settings.model,
+        messages=messages,
+        tools=TOOLS,
+        tool_choice="auto",
+    )
+    assistant_message = first_response.choices[0].message
+    tool_calls = assistant_message.tool_calls
 
-        if not tool_calls:
-            if not assistant_message.content:
-                raise ValueError("模型既没有回答，也没有请求工具")
-            return assistant_message.content
+    if not tool_calls:
+        if not assistant_message.content:
+            raise ValueError("模型既没有回答，也没有请求工具")
+        return assistant_message.content
+
+    messages.append(
+        {
+            "role": "assistant",
+            "content": assistant_message.content,
+            "tool_calls": [
+                {
+                    "id": tool_call.id,
+                    "type": tool_call.type,
+                    "function": {
+                        "name": tool_call.function.name,
+                        "arguments": tool_call.function.arguments,
+                    },
+                }
+                for tool_call in tool_calls
+            ],
+        }
+    )
+
+    for tool_call in tool_calls:
+        try:
+            arguments = json.loads(tool_call.function.arguments)
+        except json.JSONDecodeError:
+            tool_result = {
+                "success": False,
+                "error_code": "INVALID_ARGUMENTS",
+                "message": "工具参数不是合法 JSON",
+                "retryable": False,
+            }
+        else:
+            tool_result = execute_tool(tool_call.function.name, arguments)
 
         messages.append(
             {
-                "role": "assistant",
-                "content": assistant_message.content,
-                "tool_calls": [
-                    {
-                        "id": tool_call.id,
-                        "type": tool_call.type,
-                        "function": {
-                            "name": tool_call.function.name,
-                            "arguments": tool_call.function.arguments,
-                        },
-                    }
-                    for tool_call in tool_calls
-                ],
+                "role": "tool",
+                "tool_call_id": tool_call.id,
+                "content": json.dumps(tool_result, ensure_ascii=False),
             }
         )
 
-        for tool_call in tool_calls:
-            try:
-                arguments = json.loads(tool_call.function.arguments)
-            except json.JSONDecodeError:
-                tool_result = {
-                    "success": False,
-                    "error_code": "INVALID_ARGUMENTS",
-                    "message": "工具参数不是合法 JSON",
-                    "retryable": False,
-                }
-            else:
-                signature = (
-                    f"{tool_call.function.name}:"
-                    f"{json.dumps(arguments, sort_keys=True, ensure_ascii=False)}"
-                )
-                call_counts[signature] = call_counts.get(signature, 0) + 1
-
-                if call_counts[signature] > max_same_call:
-                    tool_result = {
-                        "success": False,
-                        "error_code": "DUPLICATE_TOOL_CALL",
-                        "message": "相同工具和参数已达到重复调用上限",
-                        "retryable": False,
-                    }
-                else:
-                    tool_result = execute_tool(tool_call.function.name, arguments)
-
-            messages.append(
-                {
-                    "role": "tool",
-                    "tool_call_id": tool_call.id,
-                    "content": json.dumps(tool_result, ensure_ascii=False),
-                }
-            )
-
-    raise RuntimeError("Agent 执行步骤超过上限")
+    final_response = client.chat.completions.create(
+        model=settings.model,
+        messages=messages,
+        tools=TOOLS,
+    )
+    final_content = final_response.choices[0].message.content
+    if not final_content:
+        raise ValueError("模型返回了空内容")
+    return final_content

@@ -46,8 +46,6 @@
 
 - [练习 01：调用大模型 API](practice/01-llm-api/README.md)
 - [练习 02：手动实现 Tool Calling](practice/02-tool-calling/README.md)
-- [练习 03：安全的写操作 Tool](practice/03-safe-write-tool/README.md)
-- [练习 04：Agent 短期记忆](practice/04-agent-memory/README.md)
 
 所有编程练习通过 `uv workspace` 共用根目录的 Python 3.11 虚拟环境和依赖锁文件：
 
