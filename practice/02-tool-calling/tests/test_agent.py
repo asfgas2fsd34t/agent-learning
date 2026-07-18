@@ -82,6 +82,112 @@ class AnswerQuestionTest(unittest.TestCase):
         self.assertEqual(answer, "你好，我可以查询销售额。")
         self.assertEqual(len(client.completions.requests), 1)
 
+    def test_continues_until_model_returns_final_answer(self) -> None:
+        first_tool_call = SimpleNamespace(
+            id="call_1",
+            type="function",
+            function=SimpleNamespace(
+                name="query_sales",
+                arguments='{"month":"2026-06","region":"华东"}',
+            ),
+        )
+        second_tool_call = SimpleNamespace(
+            id="call_2",
+            type="function",
+            function=SimpleNamespace(
+                name="query_sales",
+                arguments='{"month":"2026-06","region":"华南"}',
+            ),
+        )
+        client = FakeClient(
+            [
+                model_response(
+                    SimpleNamespace(content=None, tool_calls=[first_tool_call])
+                ),
+                model_response(
+                    SimpleNamespace(content=None, tool_calls=[second_tool_call])
+                ),
+                model_response(
+                    SimpleNamespace(
+                        content="华东和华南销售额分别为 125 万元和 98 万元。",
+                        tool_calls=None,
+                    )
+                ),
+            ]
+        )
+
+        answer = answer_question(
+            "查询 2026 年 6 月华东和华南销售额",
+            self.settings,
+            client=client,
+        )
+
+        self.assertEqual(answer, "华东和华南销售额分别为 125 万元和 98 万元。")
+        self.assertEqual(len(client.completions.requests), 3)
+        third_messages = client.completions.requests[2]["messages"]
+        self.assertEqual(
+            [message["role"] for message in third_messages],
+            ["system", "user", "assistant", "tool", "assistant", "tool"],
+        )
+
+    def test_stops_when_max_steps_is_reached(self) -> None:
+        tool_call = SimpleNamespace(
+            id="call_loop",
+            type="function",
+            function=SimpleNamespace(
+                name="query_sales",
+                arguments='{"month":"2026-06","region":"华东"}',
+            ),
+        )
+        client = FakeClient(
+            [
+                model_response(SimpleNamespace(content=None, tool_calls=[tool_call])),
+                model_response(SimpleNamespace(content=None, tool_calls=[tool_call])),
+            ]
+        )
+
+        with self.assertRaisesRegex(RuntimeError, "超过上限"):
+            answer_question(
+                "查询销售额",
+                self.settings,
+                client=client,
+                max_steps=2,
+            )
+
+        self.assertEqual(len(client.completions.requests), 2)
+
+    def test_reports_repeated_tool_call_after_limit(self) -> None:
+        tool_call = SimpleNamespace(
+            id="call_repeat",
+            type="function",
+            function=SimpleNamespace(
+                name="query_sales",
+                arguments='{"month":"2026-06","region":"华东"}',
+            ),
+        )
+        repeated_response = model_response(
+            SimpleNamespace(content=None, tool_calls=[tool_call])
+        )
+        final_response = model_response(
+            SimpleNamespace(content="检测到重复调用，已停止继续查询。", tool_calls=None)
+        )
+        client = FakeClient(
+            [repeated_response, repeated_response, repeated_response, final_response]
+        )
+
+        answer = answer_question(
+            "查询华东销售额",
+            self.settings,
+            client=client,
+            max_same_call=2,
+        )
+
+        self.assertEqual(answer, "检测到重复调用，已停止继续查询。")
+        third_messages = client.completions.requests[3]["messages"]
+        repeated_result = json.loads(third_messages[-1]["content"])
+        self.assertEqual(repeated_result["error_code"], "DUPLICATE_TOOL_CALL")
+        self.assertFalse(repeated_result["retryable"])
+
 
 if __name__ == "__main__":
     unittest.main()

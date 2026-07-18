@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>第 9 课：退款状态机与异常恢复</title>
+  <link rel="stylesheet" href="../assets/lesson.css">
+</head>
+<body>
+  <main>
+    <div class="eyebrow">Agent 开发 · 第 9 课</div>
+    <h1>退款状态机与异常恢复</h1>
+    <p class="lede">线上最危险的结果不是明确失败，而是“我不知道外部系统到底有没有成功”。状态机让系统在这个不确定状态下保持可恢复。</p>
+
+    <section>
+      <h2>为什么需要 UNKNOWN</h2>
+      <p>本地系统调用支付平台后发生网络超时：</p>
+      <pre><code>本地系统 -> 支付平台：退款请求已发出
+支付平台 -> 本地系统：响应途中网络超时
+
+本地系统不知道：
+1. 支付平台没有收到请求
+2. 支付平台收到并成功退款
+3. 支付平台收到但处理失败</code></pre>
+      <p>这时直接标记 <code>FAILED</code> 可能导致用户再次发起退款；直接重试又可能造成重复退款。正确状态是 <code>UNKNOWN</code>。</p>
+    </section>
+
+    <section>
+      <h2>状态转换</h2>
+      <pre><code>PENDING_APPROVAL --APPROVED--> PROCESSING
+PENDING_APPROVAL --REJECTED--> FAILED
+PROCESSING --PROVIDER_SUCCEEDED--> SUCCEEDED
+PROCESSING --PROVIDER_FAILED--> FAILED
+PROCESSING --PROVIDER_TIMEOUT--> UNKNOWN
+UNKNOWN --RECONCILED_SUCCEEDED--> SUCCEEDED
+UNKNOWN --RECONCILED_FAILED--> FAILED</code></pre>
+      <p>项目中的 <code>state.py</code> 用明确的转换表限制状态变化。成功和失败是终态，不能重新回到处理中。</p>
+    </section>
+
+    <section>
+      <h2>代码：只允许合法转换</h2>
+      <pre><code>def transition(status, event):
+    try:
+        return TRANSITIONS[(status, event)]
+    except KeyError as exc:
+        raise InvalidTransition(
+            f"不允许从 {status.value} 通过 {event} 转换"
+        ) from exc</code></pre>
+      <p>状态机的价值是把“哪些操作允许发生”从模型判断中拿出来，变成程序可以测试和审计的规则。</p>
+    </section>
+
+    <section>
+      <h2>UNKNOWN 如何恢复</h2>
+      <p>后台对账任务或支付平台回调负责查询外部状态：</p>
+      <pre><code>if refund.status == UNKNOWN:
+    provider_result = payment_api.query_refund(refund.provider_key)
+
+    if provider_result.succeeded:
+        transition(refund.status, "RECONCILED_SUCCEEDED")
+    elif provider_result.failed:
+        transition(refund.status, "RECONCILED_FAILED")
+    else:
+        # 仍然未知，保留 UNKNOWN，等待下一次对账
+        keep_current_state()</code></pre>
+      <p>在查清外部状态之前，不能因为用户再次点击就直接发起新的退款。应该复用原来的支付幂等键继续查询。</p>
+    </section>
+
+    <section>
+      <h2>数据库中的状态记录</h2>
+      <pre><code>refund_request
+├── idempotency_key
+├── provider_key
+├── order_id
+├── amount
+├── status
+├── last_error_code
+├── created_at
+└── updated_at</code></pre>
+      <p>每次状态变化都应记录时间、事件、操作者或系统任务，方便重试、对账和审计。</p>
+    </section>
+
+    <section>
+      <h2>回到项目验证</h2>
+      <pre><code>cd practice/03-safe-write-tool
+python -m uv run python -m unittest tests/test_state.py -v</code></pre>
+      <p>重点测试是“支付超时进入 UNKNOWN”和“UNKNOWN 经过对账后变成 SUCCEEDED”，以及成功终态不能重新执行。</p>
+    </section>
+
+    <section class="quiz">
+      <h2>一分钟检验</h2>
+      <p>支付接口超时，但你不知道退款是否已经成功，下一步最合理的动作是什么？</p>
+      <button onclick="answer(false)">A. 立即再次发起退款</button>
+      <button onclick="answer(true)">B. 标记 UNKNOWN，用原支付幂等键查询外部状态</button>
+      <button onclick="answer(false)">C. 直接标记 FAILED 并忽略外部结果</button>
+      <p id="feedback" aria-live="polite"></p>
+    </section>
+
+    <footer>
+      <a href="0008-请求幂等与业务幂等.html">上一课：请求幂等与业务幂等</a> ·
+      <a href="../reference/退款状态机速查表.md">退款状态机速查表</a> ·
+      <a href="0010-Agent短期记忆与多轮对话.html">下一课：Agent 短期记忆与多轮对话</a><br>
+      哪里不清楚，直接问我，我会根据你的回答调整下一课。
+    </footer>
+  </main>
+  <script>
+    function answer(correct) {
+      const feedback = document.getElementById("feedback");
+      feedback.textContent = correct
+        ? "正确。未知状态必须先对账，不能盲目重复写操作。"
+        : "再想想：超时只说明本地没有收到结果，不说明外部执行失败。";
+    }
+  </script>
+</body>
+</html>

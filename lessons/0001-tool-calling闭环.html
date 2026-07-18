@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>第 1 课：真实 Tool Calling 的闭环</title>
+  <link rel="stylesheet" href="../assets/lesson.css">
+</head>
+<body>
+  <main>
+    <div class="eyebrow">Agent 开发 · 第 1 课</div>
+    <h1>真实 Tool Calling 的闭环</h1>
+    <p class="lede">这一课只解决一个问题：模型为什么不能直接执行工具，以及一次真实的 Tool Calling 到底经过了哪些步骤。</p>
+
+    <section>
+      <h2>你将完成什么</h2>
+      <div class="panel callout">
+        看懂 02 练习中的 <code>main</code>、<code>answer_question</code> 和 <code>execute_tool</code> 如何串起来，并能解释为什么需要两次模型请求。
+      </div>
+    </section>
+
+    <section>
+      <h2>先建立正确模型</h2>
+      <p>模型不会真的运行 Python 函数，也不会直接访问数据库。模型做的是“提出工具调用请求”：它根据工具名称、描述和参数 Schema，生成工具名与参数。真正执行函数的是你的应用程序。</p>
+      <pre><code>模型：我想调用 query_sales，参数是 month=2026-06、region=华东
+应用：校验参数，执行 query_sales
+工具：返回销售额 1250000
+应用：把结果放回消息列表
+模型：根据结果生成最终回答</code></pre>
+      <p>因此 Tool Calling 不是“模型自己调用函数”，而是模型和应用程序之间的一种结构化协作协议。</p>
+    </section>
+
+    <section>
+      <h2>为什么需要两次请求</h2>
+      <p>第一次请求时，模型还不知道工具执行结果，所以只能决定“要不要调用工具”。应用拿到 <code>tool_call</code> 后执行工具，再发起第二次请求，让模型读取工具结果并组织自然语言回答。</p>
+      <pre><code>第一次：messages + tools -> tool_call
+                         ↓
+                   execute_tool
+                         ↓
+第二次：messages + tool_result -> final answer</code></pre>
+      <div class="panel">
+        <strong>关键边界：</strong>模型负责选择和表达意图；应用负责校验和执行；工具负责返回事实结果。权限、金额限制和安全检查不能交给模型决定。
+      </div>
+    </section>
+
+    <section>
+      <h2>对照你的 02 练习</h2>
+      <p>在 <code>answer_question</code> 中，<code>first_response</code> 是第一次请求。若 <code>tool_calls</code> 为空，说明模型可以直接回答；若不为空，程序就解析参数、调用 <code>execute_tool</code>，把 assistant 消息和 tool 消息追加到 <code>messages</code>，然后请求最终答案。</p>
+      <p><code>main</code> 只是 CLI 外壳：读取问题、加载配置、调用 Agent、输出结果。它不应该知道销售查询的细节，这就是为什么测试时可以把 <code>answer</code> 替换成一个函数。</p>
+    </section>
+
+    <section>
+      <h2>真实测试与假测试</h2>
+      <div class="panel">
+        <p><strong>单元测试：</strong>用 FakeClient 模拟模型返回，验证消息顺序、工具参数和错误处理。优点是快、稳定、不花钱。</p>
+        <p><strong>真实测试：</strong>读取 .env，调用真实模型，验证模型、接口、工具调用协议和最终结果能否连通。缺点是耗时、消耗额度、结果可能变化。</p>
+      </div>
+      <p>两者不是互相替代的关系。你的 <code>tests/test_live_api.py</code> 是真实测试，使用下面的命令显式开启：</p>
+      <pre><code>$env:RUN_LIVE_TESTS = "1"
+python -m uv run python -m unittest tests/test_live_api.py -v</code></pre>
+    </section>
+
+    <section class="quiz">
+      <h2>一分钟检验</h2>
+      <p>如果模型返回了一个不存在的地区，谁应该负责阻止这个参数进入数据库查询？</p>
+      <button onclick="answer(false)">A. 只在 system prompt 中提醒模型</button>
+      <button onclick="answer(true)">B. 应用程序或工具执行层做参数校验</button>
+      <button onclick="answer(false)">C. 等模型第二次回答时自己纠正</button>
+      <p id="feedback" aria-live="polite"></p>
+    </section>
+
+    <footer>
+      参考：<a href="https://platform.openai.com/docs/guides/function-calling">OpenAI Function Calling Guide</a> · <a href="../reference/tool-calling-速查表.md">Tool Calling 速查表</a><br>
+      <a href="0002-工具错误重试与循环终止.html">下一课：工具错误、重试与循环终止</a>
+      <br>哪里不清楚，直接问我，我会根据你的回答调整下一课。
+    </footer>
+  </main>
+  <script>
+    function answer(correct) {
+      const feedback = document.getElementById("feedback");
+      feedback.textContent = correct
+        ? "正确。提示词可以辅助理解，业务代码才是安全边界。"
+        : "再想想：模型输出始终是不可信输入，执行层必须校验。";
+    }
+  </script>
+</body>
+</html>

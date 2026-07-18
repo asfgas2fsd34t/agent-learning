@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>第 2 课：工具错误、重试与循环终止</title>
+  <link rel="stylesheet" href="../assets/lesson.css">
+</head>
+<body>
+  <main>
+    <div class="eyebrow">Agent 开发 · 第 2 课</div>
+    <h1>工具错误、重试与循环终止</h1>
+    <p class="lede">一个生产级 Agent 不只是“失败后再试一次”，而是要知道失败的原因、是否能重试，以及什么时候必须停止。</p>
+
+    <section>
+      <h2>这一课的目标</h2>
+      <div class="panel callout">
+        看到一个工具错误时，你能判断应该重试、修正参数、向用户提问、直接停止，还是交给人工处理。
+      </div>
+    </section>
+
+    <section>
+      <h2>错误不是一种东西</h2>
+      <p>如果工具只返回“查询失败”，模型无法知道下一步该做什么。它可能把权限不足当成网络问题，不断重试；也可能把没有数据误认为参数错误，继续修改参数。</p>
+      <p>工具结果至少要区分成功、错误类型和是否可重试：</p>
+      <pre><code>{
+  "success": false,
+  "error_code": "PERMISSION_DENIED",
+  "message": "当前用户无权查询该订单",
+  "retryable": false,
+  "request_id": "req_123"
+}</code></pre>
+      <div class="panel">
+        <strong>牢记：</strong>错误信息是给模型的决策材料，但错误分类、权限和最大重试次数必须由程序控制。
+      </div>
+    </section>
+
+    <section>
+      <h2>什么时候可以重试</h2>
+      <p>网络超时、临时服务不可用和部分限流通常是暂时性的，可以在次数和总耗时受控的前提下重试。参数错误、无权限和查询无数据通常不会因为再调用一次而改变，应该停止重试。</p>
+      <pre><code>网络超时       -> 退避后最多重试 2 次
+参数格式错误   -> 修正参数或向用户询问
+无权限         -> 停止，不能绕过权限
+查询无数据     -> 告知用户没有结果
+写操作超时     -> 先查询执行状态，不能盲目重试</code></pre>
+    </section>
+
+    <section>
+      <h2>为什么还要限制循环</h2>
+      <p>即使模型被提示“不要无限重试”，也不能把停止责任完全交给模型。模型可能因为状态没有记录、工具结果不清晰或自身推理错误而重复调用。</p>
+      <p>应用程序至少应设置：</p>
+      <ul>
+        <li>单个工具最大调用次数</li>
+        <li>Agent 最大执行步骤数</li>
+        <li>总任务超时</li>
+        <li>Token 和费用预算</li>
+        <li>相同工具、相同参数的重复调用检测</li>
+      </ul>
+      <p>达到任一上限后，应停止循环，并根据场景降级、报告失败原因或转人工。</p>
+    </section>
+
+    <section>
+      <h2>查询和写操作的区别</h2>
+      <p>查询超时后，重复查询通常只会再次读取数据；退款、扣款和删除等写操作可能已经成功，只是响应没有及时返回。此时直接重试可能产生重复副作用。</p>
+      <div class="panel callout">
+        写操作的正确顺序是：使用幂等键发起请求；超时时先查询外部系统的执行状态；确认没有执行后，才能决定是否重试。
+      </div>
+    </section>
+
+    <section class="quiz">
+      <h2>判断四种结果</h2>
+      <p>工具返回：<code>error_code=PERMISSION_DENIED</code>，<code>retryable=false</code>。Agent 最合适的动作是什么？</p>
+      <button onclick="answer(false)">A. 更换一个用户 ID 继续查询</button>
+      <button onclick="answer(true)">B. 停止调用，并说明当前用户没有权限</button>
+      <button onclick="answer(false)">C. 等待几秒后无限重试</button>
+      <p id="feedback" aria-live="polite"></p>
+    </section>
+
+    <footer>
+      <a href="0001-tool-calling闭环.html">上一课：真实 Tool Calling 的闭环</a> ·
+      <a href="../reference/工具错误与重试速查表.md">工具错误与重试速查表</a><br>
+      <a href="0003-Agent循环与状态.html">下一课：Agent 循环与状态</a>
+      <br>哪里不清楚，直接问我，我会根据你的回答调整下一课。
+    </footer>
+  </main>
+  <script>
+    function answer(correct) {
+      const feedback = document.getElementById("feedback");
+      feedback.textContent = correct
+        ? "正确。权限错误是不可重试错误，不能通过重复调用或更换参数绕过。"
+        : "再看一下 retryable 字段：false 表示重复调用不会解决问题。";
+    }
+  </script>
+</body>
+</html>

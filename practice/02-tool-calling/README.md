@@ -214,26 +214,52 @@ uv run python -m unittest discover -s tests -v
 - 工具名称与参数 Schema
 - 未知工具不能执行
 - 模型直接回答时只请求一次
-- 模型请求工具时会请求两次
+- 模型可以连续请求多轮工具
+- 达到最大执行步数后停止
 - Tool 结果正确关联 `tool_call_id`
 
-## 10. 为什么这还不是完整 Agent
+### 真实模型测试
 
-当前流程最多执行一轮工具调用：
+真实测试会读取本地 `.env`，调用实际模型并执行一次 Tool Calling，会消耗 API 额度，因此需要显式开启：
 
-```text
-模型 -> 工具 -> 模型 -> 结束
+PowerShell：
+
+```powershell
+$env:RUN_LIVE_TESTS = "1"
+uv run python -m unittest tests/test_live_api.py -v
 ```
 
-它没有实现：
+真实测试文件为 `tests/test_live_api.py`。它会查询固定的 2026 年 6 月华东区销售额，并校验模型返回了对应数据。
 
-- 根据第二次结果继续调用其他工具
-- 最大执行步数
-- 循环终止条件
-- 多步骤状态
-- 重复调用检测
+## 10. Agent 循环
 
-练习 03 会将当前代码改造成真正的循环：
+当前流程已经支持带最大步数保护的多轮工具调用：
+
+```text
+模型 -> 工具 -> 模型 -> 工具 -> 模型 -> 结束
+```
+
+核心代码在 `src/tool_calling_practice/agent.py`：
+
+```python
+for _ in range(max_steps):
+    response = client.chat.completions.create(...)
+    if not response.choices[0].message.tool_calls:
+        return response.choices[0].message.content
+    # 追加 assistant 消息和 tool 结果，进入下一轮
+```
+
+同时，`max_same_call` 会限制相同工具和相同参数的重复调用，并返回 `DUPLICATE_TOOL_CALL` 结构化错误。
+
+当前还没有实现复杂重试策略和写操作幂等，这些属于后续生产化改造。
+
+第 3 课对应的代码速查表：
+
+[Agent 循环代码速查表](../../reference/Agent循环代码速查表.md)
+
+第 4 课对应的代码速查表：
+
+[重复调用与预算控制速查表](../../reference/重复调用与预算控制速查表.md)
 
 ```text
 模型 -> 工具 -> 模型 -> 工具 -> ... -> 最终回答

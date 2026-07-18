@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>第 6 课：Tool 类型与风险分级</title>
+  <link rel="stylesheet" href="../assets/lesson.css">
+</head>
+<body>
+  <main>
+    <div class="eyebrow">Agent 开发 · 第 6 课</div>
+    <h1>Tool 类型与风险分级</h1>
+    <p class="lede">Tool 的分类不是为了记名词，而是为了决定权限、重试、幂等、审计和人工确认应该做到什么程度。</p>
+
+    <section>
+      <h2>先按业务作用分类</h2>
+      <p>查询、写入、搜索、计算、文件、通信和系统操作都是常见 Tool 类型。一个 Tool 可能同时属于多个类别，例如“搜索企业知识库”既是搜索类 Tool，也可能通过 HTTP 调用外部服务。</p>
+      <pre><code>query_sales(...)       # 查询类：读取销售数据
+update_address(...)    # 写操作类：修改用户地址
+search_documents(...)  # 搜索类：检索知识库
+run_python(...)        # 计算类：执行精确计算
+send_email(...)        # 通信类：产生外部副作用</code></pre>
+    </section>
+
+    <section>
+      <h2>再按副作用判断风险</h2>
+      <p>最实用的问题是：这个 Tool 会不会改变真实世界的状态？不会改变状态的查询通常风险较低；会修改数据库、发送消息或触发支付的 Tool 风险更高。</p>
+      <div class="panel callout">
+        <p><strong>低风险：</strong>查询订单、查询销售额、读取库存。</p>
+        <p><strong>中风险：</strong>修改地址、创建订单、发送邮件。</p>
+        <p><strong>高风险：</strong>退款、付款、删除数据、修改权限。</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>不同风险对应不同控制</h2>
+      <pre><code>查询 Tool
+  -> 参数校验 + 数据权限
+
+写操作 Tool
+  -> 参数校验 + 权限 + 状态检查
+  -> 幂等 + 审计日志
+
+高风险 Tool
+  -> 上述全部控制
+  -> 金额或范围限制
+  -> Human-in-the-loop
+  -> 执行后复核</code></pre>
+      <p>例如，查询销售额虽然是只读操作，也不能跳过用户和租户权限；退款则不能只依靠模型说“请确认”，必须在业务执行层真正阻止未授权调用。</p>
+    </section>
+
+    <section>
+      <h2>把分类写进代码</h2>
+      <p>可以在工具注册信息中显式记录风险等级，让应用程序统一处理策略：</p>
+      <pre><code>TOOL_POLICY = {
+    "query_sales": {
+        "risk": "read",
+        "requires_idempotency": False,
+        "requires_human_approval": False,
+    },
+    "refund_order": {
+        "risk": "high",
+        "requires_idempotency": True,
+        "requires_human_approval": True,
+    },
+}</code></pre>
+      <p>这段策略不能替代权限系统，但可以让 Agent 执行器知道：哪些工具允许自动执行，哪些工具必须暂停等待审批。</p>
+    </section>
+
+    <section>
+      <h2>当前项目里的例子</h2>
+      <p><code>query_sales</code> 是查询类、只读、低副作用 Tool。它仍然需要参数校验和权限控制，但通常不需要幂等键或人工确认。</p>
+      <pre><code>query_sales(
+    month="2026-06",
+    region="华东",
+)
+-> 读取销售数据
+-> 返回结构化结果
+-> 不修改业务状态</code></pre>
+      <p>如果未来加入 <code>refund_order</code>，它就应当进入高风险流程，而不是简单复制 <code>query_sales</code> 的执行方式。</p>
+    </section>
+
+    <section class="quiz">
+      <h2>一分钟检验</h2>
+      <p>“发送退款请求”最少应该比“查询订单”多哪些控制？</p>
+      <button onclick="answer(false)">A. 只需要更详细的工具描述</button>
+      <button onclick="answer(true)">B. 权限、幂等、审计，必要时人工确认</button>
+      <button onclick="answer(false)">C. 只需要把 temperature 调低</button>
+      <p id="feedback" aria-live="polite"></p>
+    </section>
+
+    <footer>
+      <a href="0005-工具定义与参数校验.html">上一课：工具定义与参数校验</a> ·
+      <a href="../reference/Tool类型与风险分级速查表.md">Tool 类型与风险分级速查表</a> ·
+      <a href="0007-写操作Tool的幂等与人工确认.html">下一课：写操作 Tool 的幂等与人工确认</a><br>
+      哪里不清楚，直接问我，我会根据你的回答调整下一课。
+    </footer>
+  </main>
+  <script>
+    function answer(correct) {
+      const feedback = document.getElementById("feedback");
+      feedback.textContent = correct
+        ? "正确。写操作的风险来自真实副作用，不是来自模型参数。"
+        : "再想想：temperature 不能替代权限、幂等和审计。";
+    }
+  </script>
+</body>
+</html>
