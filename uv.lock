@@ -4,8 +4,40 @@ requires-python = "==3.11.*"
 
 [manifest]
 members = [
+    "agent-loop-practice",
+    "agent-memory-practice",
     "llm-api-practice",
     "tool-calling-practice",
+]
+
+[[package]]
+name = "agent-loop-practice"
+version = "0.1.0"
+source = { editable = "practice/03-agent-loop" }
+dependencies = [
+    { name = "openai" },
+    { name = "python-dotenv" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "openai", specifier = ">=1.0.0" },
+    { name = "python-dotenv", specifier = ">=1.0.0" },
+]
+
+[[package]]
+name = "agent-memory-practice"
+version = "0.1.0"
+source = { editable = "practice/04-agent-memory" }
+dependencies = [
+    { name = "openai" },
+    { name = "python-dotenv" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "openai", specifier = ">=1.0.0" },
+    { name = "python-dotenv", specifier = ">=1.0.0" },
 ]
 
 [[package]]
