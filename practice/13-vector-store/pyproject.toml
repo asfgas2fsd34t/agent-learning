@@ -1,0 +1,12 @@
+[project]
+name = "vector-store-practice"
+version = "0.1.0"
+requires-python = ">=3.11,<3.12"
+dependencies = ["langchain-core>=1.4.9,<2", "numpy>=1.26,<3"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
