@@ -462,7 +462,135 @@ field_validator
 7. Pydantic 校验通过后，为什么仍然需要业务校验？
 8. LangChain 如何使用 Pydantic 得到结构化输出？
 
-## 17. 官方资料
+## 17. 从输入到模型对象：运行时到底发生了什么
+
+`BaseModel` 不是给字典加一个类型别名，而是一个运行时解析边界。以
+`User.model_validate(data)` 为例，可以把过程拆成四步：
+
+```text
+原始输入
+  -> 字段定位（缺失、额外字段）
+  -> 类型解析（str、int、嵌套模型、列表）
+  -> Field 和 validator 校验
+  -> 构造已校验的 User 对象
+```
+
+模型对象内部保存的是校验后的值，而不是原始输入的副本。默认情况下，未知字段通常会被忽略；对配置、工具参数等边界对象，最好显式决定是否拒绝未知字段：
+
+```python
+from pydantic import BaseModel, ConfigDict
+
+
+class ToolArguments(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    month: str
+    region: str
+```
+
+`extra="forbid"` 可以拒绝模型偷偷附加的 `sql`、`is_admin` 等字段，但它不是权限校验。权限仍必须由服务端身份上下文决定。
+
+## 18. Coercion、Strict 和边界建模
+
+类型转换要按数据边界选择，而不是凭个人习惯选择：
+
+| 数据 | 可接受转换 | 更合适的策略 |
+| --- | --- | --- |
+| 环境变量端口 | `"8080" -> 8080` | 默认转换通常合理 |
+| 用户 ID | `123 -> "123"` 可能掩盖错误 | 常用 `StrictStr` 或严格模型 |
+| 金额 | `"100.00" -> 100.0` 可能丢失格式语义 | 使用 `Decimal`，并校验精度 |
+| 工具参数 | 多余字段或模糊类型可能造成越权 | `extra="forbid"` + 严格业务校验 |
+
+严格模式只解决“输入类型是否准确”，不解决“值是否真实”和“操作是否允许”。例如 `month="2099-13"` 可以是字符串类型正确，但仍不是合法月份。
+
+```python
+from datetime import date
+from pydantic import BaseModel, Field, field_validator
+
+
+class SalesQuery(BaseModel):
+    month: str = Field(pattern=r"^\d{4}-(0[1-9]|1[0-2])$")
+    region: str = Field(min_length=1, max_length=50)
+
+    @field_validator("region")
+    @classmethod
+    def normalize_region(cls, value: str) -> str:
+        value = value.strip()
+        if value not in {"华东", "华南", "华北"}:
+            raise ValueError("不支持的地区")
+        return value
+```
+
+这里的正则只能验证格式，地区白名单才是业务约束。若地区来自租户权限，白名单还必须在服务层再次根据当前用户计算，不能只写死在模型里。
+
+## 19. JSON Schema 是给调用者的契约，不是执行器
+
+```python
+schema = SalesQuery.model_json_schema()
+```
+
+Schema 会描述字段、类型、必填项和 `description`，LangChain 可以把它交给模型作为 Tool Calling 或 Structured Output 的参数契约。实际链路是：
+
+```text
+Pydantic 类型
+ -> JSON Schema
+ -> 模型生成 arguments
+ -> Pydantic 解析
+ -> 业务服务授权、查询和幂等校验
+```
+
+模型看到 Schema 不代表它拥有执行权限；Pydantic 解析成功也不代表 SQL 可以执行。把“结构合法”“身份有权”“业务状态允许”分成三道门，排错时才知道失败发生在哪里。
+
+## 20. 配置模型、传输模型和领域对象不要混成一个类
+
+建议在边界处分层：
+
+```text
+Settings：环境变量、服务地址、超时和开关
+Request/ToolArguments：外部请求和模型参数
+Domain model：业务内部状态和不变量
+Response：允许返回给调用者的数据
+```
+
+例如，数据库连接密码可以存在 `Settings`，但不能因为同一个模型被 `model_dump()` 就出现在 Agent 的 ToolMessage 中。输出模型还应主动排除敏感字段，而不是依赖调用方记得脱敏。
+
+## 21. 可执行实验：观察校验边界
+
+把下面代码保存为临时脚本运行，逐个修改输入并观察 `errors()`：
+
+```python
+from pydantic import BaseModel, ConfigDict, Field, ValidationError
+
+
+class Query(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    month: str = Field(pattern=r"^\d{4}-(0[1-9]|1[0-2])$")
+    limit: int = Field(default=20, ge=1, le=100)
+
+
+for raw in [
+    {"month": "2026-07"},
+    {"month": "2026-13"},
+    {"month": "2026-07", "limit": 101},
+    {"month": "2026-07", "admin": True},
+]:
+    try:
+        print(Query.model_validate(raw).model_dump())
+    except ValidationError as error:
+        print(error.errors())
+```
+
+实验目标不是背 API，而是练习回答：这是缺字段、格式错误、范围错误还是未知字段？对应的错误应该返回给模型、用户还是内部日志？
+
+## 22. 进阶自测
+
+1. 为什么 Pydantic 的 `ValidationError` 不能直接等同于 HTTP 400 或 Tool 调用失败？
+2. `extra="forbid"` 对防止 Tool Calling 注入有什么帮助，又有哪些事情它做不到？
+3. 什么时候应该使用 `Decimal` 而不是 `float`？
+4. 为什么 Schema 描述、结构校验、权限校验和业务校验必须分层？
+5. 如果模型传入合法格式但不存在的订单号，应该由哪一层报错？
+
+## 23. 官方资料
 
 - [Pydantic Models](https://docs.pydantic.dev/latest/concepts/models/)
 - [Pydantic Fields](https://docs.pydantic.dev/latest/concepts/fields/)
@@ -471,4 +599,3 @@ field_validator
 - [Pydantic Validation Errors](https://docs.pydantic.dev/latest/errors/errors/)
 
 > 本项目当前使用 Pydantic 2.13.4。网上使用 `parse_obj()`、`dict()`、`json()`、`@validator` 的内容大多是 Pydantic v1 写法；v2 新代码优先使用本笔记中的 API。
-
