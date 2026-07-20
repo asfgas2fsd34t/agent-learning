@@ -41,22 +41,24 @@
 ### Agent 开发实战
 
 - [Agent 开发实战学习路径](notes/Agent开发实战/README.md)
-- [00 Pydantic 基础：让外部数据变成可靠对象](notes/Agent开发实战/00-Pydantic基础.md)
-- [01 LangChain 基础：从原生调用到可组合链](notes/Agent开发实战/01-LangChain基础.md)
-- [02 Runnable 与 LCEL 深入](notes/Agent开发实战/02-Runnable与LCEL深入.md)
-- [03 LangChain Tools](notes/Agent开发实战/03-LangChainTools.md)
-- [04 LangChain Agent](notes/Agent开发实战/04-LangChainAgent.md)
-- [05 上下文与 Memory](notes/Agent开发实战/05-上下文与Memory.md)
-- [06 生产级工具集成](notes/Agent开发实战/06-生产级工具集成.md)
-- [07 Agent 安全与中间件](notes/Agent开发实战/07-Agent安全与中间件.md)
-- [08 文档加载与切分](notes/Agent开发实战/08-文档加载与切分.md)
-- [09 Embedding 与向量存储](notes/Agent开发实战/09-Embedding与向量存储.md)
-- [10 Retriever 与标准 RAG](notes/Agent开发实战/10-Retriever与标准RAG.md)
-- [11 Agentic RAG](notes/Agent开发实战/11-AgenticRAG.md)
-- [12 LangGraph 基础](notes/Agent开发实战/12-LangGraph基础.md)
-- [13 LangGraph 进阶流程](notes/Agent开发实战/13-LangGraph进阶流程.md)
-- [14 持久化与人工介入](notes/Agent开发实战/14-持久化与人工介入.md)
-- [15 调试、评测与性能优化](notes/Agent开发实战/15-调试评测与性能优化.md)
+- [01 Pydantic 基础：让外部数据变成可靠对象](notes/Agent开发实战/01-Pydantic基础.md)
+- [02 LangChain 基础：从原生调用到可组合链](notes/Agent开发实战/02-LangChain基础.md)
+- [03 Runnable 与 LCEL 深入](notes/Agent开发实战/03-Runnable与LCEL深入.md)
+- [04 LangChain Tools](notes/Agent开发实战/04-LangChainTools.md)
+- [05 LangChain Agent](notes/Agent开发实战/05-LangChainAgent.md)
+- [06 上下文与 Memory](notes/Agent开发实战/06-上下文与Memory.md)
+- [07 生产级工具集成](notes/Agent开发实战/07-生产级工具集成.md)
+- [08 Agent 安全与中间件](notes/Agent开发实战/08-Agent安全与中间件.md)
+- [09 LangGraph 基础](notes/Agent开发实战/09-LangGraph基础.md)
+- [10 LangGraph 进阶流程](notes/Agent开发实战/10-LangGraph进阶流程.md)
+- [11 持久化与人工介入](notes/Agent开发实战/11-持久化与人工介入.md)
+- [12 调试、评测与性能优化](notes/Agent开发实战/12-调试评测与性能优化.md)
+
+### RAG 开发实战
+
+- [RAG 开发实战学习路径](notes/RAG开发实战/README.md)
+- [01 RAG 基础概念与核心组件](notes/RAG开发实战/01-RAG基础概念与核心组件.md)
+- [02 RAG 技术实现](notes/RAG开发实战/02-RAG技术实现.md)
 
 ### 后端基础
 
@@ -64,30 +66,14 @@
 
 ## 编程实践
 
-- [练习 01：调用大模型 API](practice/01-llm-api/README.md)
-- [练习 02：手动实现 Tool Calling](practice/02-tool-calling/README.md)
-- [练习 03：原生 Agent 循环](practice/03-agent-loop/README.md)
-- [练习 04：原生 Agent Memory](practice/04-agent-memory/README.md)
-- [练习 05：LangChain 基础](practice/05-langchain-basics/README.md)
-- [练习 06：Runnable 与 LCEL 深入](practice/06-langchain-runnables/README.md)
-- [练习 07：LangChain Tools](practice/07-langchain-tools/README.md)
-- [练习 08：LangChain Agent](practice/08-langchain-agent/README.md)
-- [练习 09：LangChain Memory](practice/09-langchain-memory/README.md)
-- [练习 10：生产级工具集成](practice/10-production-tools/README.md)
-- [练习 11：Agent 安全与中间件](practice/11-agent-middleware/README.md)
-- [练习 12：文档加载与切分](practice/12-document-processing/README.md)
-- [练习 13：Embedding 与向量存储](practice/13-vector-store/README.md)
-- [练习 14：标准 RAG Chain](practice/14-rag-chain/README.md)
-- [练习 15：Agentic RAG](practice/15-agentic-rag/README.md)
-- [练习 16：LangGraph 基础](practice/16-langgraph-basics/README.md)
-- [练习 17：LangGraph 进阶流程](practice/17-langgraph-workflow/README.md)
-- [练习 18：持久化与人工介入](practice/18-langgraph-persistence/README.md)
-- [练习 19：Agent 调试与评测](practice/19-agent-evaluation/README.md)
+- [基础接口与原生机制](practice/基础接口/README.md)
+- [Agent 开发实战](practice/Agent开发实战/README.md)
+- [RAG 编程实践目录](practice/RAG开发实战/README.md)
 
 所有编程练习通过 `uv workspace` 共用根目录的 Python 3.11 虚拟环境和依赖锁文件：
 
 ```bash
-uv sync --all-packages
+uv sync --all-packages --no-editable
 ```
 
 PyCharm 统一选择：

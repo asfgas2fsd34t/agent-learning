@@ -28,7 +28,7 @@ members = [
 [[package]]
 name = "agent-evaluation-practice"
 version = "0.1.0"
-source = { editable = "practice/19-agent-evaluation" }
+source = { editable = "practice/Agent开发实战/11-agent-evaluation" }
 dependencies = [
     { name = "pydantic" },
 ]
@@ -39,7 +39,7 @@ requires-dist = [{ name = "pydantic", specifier = ">=2,<3" }]
 [[package]]
 name = "agent-loop-practice"
 version = "0.1.0"
-source = { editable = "practice/03-agent-loop" }
+source = { editable = "practice/基础接口/03-agent-loop" }
 dependencies = [
     { name = "openai" },
     { name = "python-dotenv" },
@@ -54,7 +54,7 @@ requires-dist = [
 [[package]]
 name = "agent-memory-practice"
 version = "0.1.0"
-source = { editable = "practice/04-agent-memory" }
+source = { editable = "practice/基础接口/04-agent-memory" }
 dependencies = [
     { name = "openai" },
     { name = "python-dotenv" },
@@ -69,7 +69,7 @@ requires-dist = [
 [[package]]
 name = "agent-middleware-practice"
 version = "0.1.0"
-source = { editable = "practice/11-agent-middleware" }
+source = { editable = "practice/Agent开发实战/07-agent-middleware" }
 dependencies = [
     { name = "langchain" },
     { name = "langchain-openai" },
@@ -86,7 +86,7 @@ requires-dist = [
 [[package]]
 name = "agentic-rag-practice"
 version = "0.1.0"
-source = { editable = "practice/15-agentic-rag" }
+source = { editable = "practice/RAG开发实战/04-agentic-rag" }
 dependencies = [
     { name = "langchain" },
     { name = "langchain-openai" },
@@ -176,7 +176,7 @@ wheels = [
 [[package]]
 name = "document-processing-practice"
 version = "0.1.0"
-source = { editable = "practice/12-document-processing" }
+source = { editable = "practice/RAG开发实战/01-document-processing" }
 dependencies = [
     { name = "langchain-core" },
     { name = "langchain-text-splitters" },
@@ -298,7 +298,7 @@ wheels = [
 [[package]]
 name = "langchain-agent-practice"
 version = "0.1.0"
-source = { editable = "practice/08-langchain-agent" }
+source = { editable = "practice/Agent开发实战/04-langchain-agent" }
 dependencies = [
     { name = "langchain" },
     { name = "langchain-openai" },
@@ -315,7 +315,7 @@ requires-dist = [
 [[package]]
 name = "langchain-basics-practice"
 version = "0.1.0"
-source = { editable = "practice/05-langchain-basics" }
+source = { editable = "practice/Agent开发实战/01-langchain-basics" }
 dependencies = [
     { name = "langchain" },
     { name = "langchain-openai" },
@@ -352,7 +352,7 @@ wheels = [
 [[package]]
 name = "langchain-memory-practice"
 version = "0.1.0"
-source = { editable = "practice/09-langchain-memory" }
+source = { editable = "practice/Agent开发实战/05-langchain-memory" }
 dependencies = [
     { name = "langchain" },
     { name = "langchain-openai" },
@@ -395,7 +395,7 @@ wheels = [
 [[package]]
 name = "langchain-runnables-practice"
 version = "0.1.0"
-source = { editable = "practice/06-langchain-runnables" }
+source = { editable = "practice/Agent开发实战/02-langchain-runnables" }
 dependencies = [
     { name = "langchain" },
     { name = "langchain-openai" },
@@ -424,7 +424,7 @@ wheels = [
 [[package]]
 name = "langchain-tools-practice"
 version = "0.1.0"
-source = { editable = "practice/07-langchain-tools" }
+source = { editable = "practice/Agent开发实战/03-langchain-tools" }
 dependencies = [
     { name = "langchain" },
     { name = "langchain-openai" },
@@ -458,7 +458,7 @@ wheels = [
 [[package]]
 name = "langgraph-basics-practice"
 version = "0.1.0"
-source = { editable = "practice/16-langgraph-basics" }
+source = { editable = "practice/Agent开发实战/08-langgraph-basics" }
 dependencies = [
     { name = "langchain-openai" },
     { name = "langgraph" },
@@ -488,7 +488,7 @@ wheels = [
 [[package]]
 name = "langgraph-persistence-practice"
 version = "0.1.0"
-source = { editable = "practice/18-langgraph-persistence" }
+source = { editable = "practice/Agent开发实战/10-langgraph-persistence" }
 dependencies = [
     { name = "langgraph" },
 ]
@@ -528,7 +528,7 @@ wheels = [
 [[package]]
 name = "langgraph-workflow-practice"
 version = "0.1.0"
-source = { editable = "practice/17-langgraph-workflow" }
+source = { editable = "practice/Agent开发实战/09-langgraph-workflow" }
 dependencies = [
     { name = "langgraph" },
 ]
@@ -564,7 +564,7 @@ wheels = [
 [[package]]
 name = "llm-api-practice"
 version = "0.1.0"
-source = { editable = "practice/01-llm-api" }
+source = { editable = "practice/基础接口/01-llm-api" }
 dependencies = [
     { name = "openai" },
     { name = "python-dotenv" },
@@ -673,7 +673,7 @@ wheels = [
 [[package]]
 name = "production-tools-practice"
 version = "0.1.0"
-source = { editable = "practice/10-production-tools" }
+source = { editable = "practice/Agent开发实战/06-production-tools" }
 dependencies = [
     { name = "langchain" },
     { name = "pydantic" },
@@ -767,7 +767,7 @@ wheels = [
 [[package]]
 name = "rag-chain-practice"
 version = "0.1.0"
-source = { editable = "practice/14-rag-chain" }
+source = { editable = "practice/RAG开发实战/03-rag-chain" }
 dependencies = [
     { name = "langchain" },
     { name = "langchain-openai" },
@@ -874,7 +874,7 @@ wheels = [
 [[package]]
 name = "tool-calling-practice"
 version = "0.1.0"
-source = { editable = "practice/02-tool-calling" }
+source = { editable = "practice/基础接口/02-tool-calling" }
 dependencies = [
     { name = "openai" },
     { name = "python-dotenv" },
@@ -961,7 +961,7 @@ wheels = [
 [[package]]
 name = "vector-store-practice"
 version = "0.1.0"
-source = { editable = "practice/13-vector-store" }
+source = { editable = "practice/RAG开发实战/02-vector-store" }
 dependencies = [
     { name = "langchain-core" },
     { name = "numpy" },

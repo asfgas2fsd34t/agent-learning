@@ -1,2 +1,22 @@
 [tool.uv.workspace]
-members = ["practice/*"]
+members = [
+    "practice/基础接口/01-llm-api",
+    "practice/基础接口/02-tool-calling",
+    "practice/基础接口/03-agent-loop",
+    "practice/基础接口/04-agent-memory",
+    "practice/Agent开发实战/01-langchain-basics",
+    "practice/Agent开发实战/02-langchain-runnables",
+    "practice/Agent开发实战/03-langchain-tools",
+    "practice/Agent开发实战/04-langchain-agent",
+    "practice/Agent开发实战/05-langchain-memory",
+    "practice/Agent开发实战/06-production-tools",
+    "practice/Agent开发实战/07-agent-middleware",
+    "practice/Agent开发实战/08-langgraph-basics",
+    "practice/Agent开发实战/09-langgraph-workflow",
+    "practice/Agent开发实战/10-langgraph-persistence",
+    "practice/Agent开发实战/11-agent-evaluation",
+    "practice/RAG开发实战/01-document-processing",
+    "practice/RAG开发实战/02-vector-store",
+    "practice/RAG开发实战/03-rag-chain",
+    "practice/RAG开发实战/04-agentic-rag",
+]
