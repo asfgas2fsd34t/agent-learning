@@ -1,164 +1,204 @@
 # Agent 开发实战学习路径
 
-## 1. 阶段目标
+## 1. 整理说明
 
-这一阶段承接已经完成的 Agent 原生机制学习，开始使用主流框架开发一个具备以下能力的生产级单 Agent：
-
-- 使用 LangChain 组合模型、提示词、结构化输出和工具
-- 接入搜索、数据库、文件和 HTTP API 等真实工具
-- 管理会话上下文与短期记忆
-- 使用 RAG 检索外部知识
-- 使用 LangGraph 表达分支、循环、恢复和人工确认
-- 具备权限、幂等、错误处理、日志、测试和评测能力
-
-本阶段不学习多 Agent。Supervisor、Swarm、AutoGPT、MetaGPT、Agent 间通信与协作协议等内容，放到后续独立的多 Agent 学习阶段。
-
-## 2. 学习形式
-
-每一课原则上包含两部分：
+本目录按照 `D:\WorkSpace\01-课件` 中尚硅谷 01-09 课件重新整理。笔记不是逐页抄写，而是保留概念、关键 API、执行流程、代码骨架和生产边界，去掉平台注册、充值步骤、超长运行输出和固定密钥等低价值内容。
 
 ```text
-notes/Agent开发实战/XX-课程名称.md
-practice/Agent开发实战/XX-英文练习目录/
+01 LangChain 概述
+02 模型的创建与调用
+03 LangSmith 的使用
+04 Message 与提示词模板
+05 Tools
+06 结构化输出
+07 智能体
+08 中间件
+09 上下文与记忆
 ```
 
-学习材料要求：
+示例以课件内容为基础，并按照当前项目的 LangChain 1.3、LangChain Core 1.4 和 LangGraph 1.2 接口校正。模型提供商、模型名称和扩展参数仍应以实际服务文档为准。
 
-- Markdown 笔记使用中文，解释概念、原理、数据流和生产边界
-- 配套代码使用 Python 3.11，并纳入当前 `uv workspace`
-- 每个练习包含 `.env.example`、`README.md`、`pyproject.toml`、`src/` 和测试
-- 涉及模型能力时提供真实 API 端到端测试，不使用假回答代替真实验证
-- 单元测试可以保留，用于端到端失败后定位具体模块
-- 每完成一课，更新本 README 的状态和实际文件链接
+## 2. 学习目标
 
-## 3. 总体顺序
+完成本阶段后，应能够：
+
+- 创建和调用不同提供商的 ChatModel
+- 使用 Message 与 Prompt Template 组织模型输入
+- 把 Python 函数封装为 Tool，并理解 Tool Calling 完整循环
+- 使用 Pydantic 等 Schema 获取结构化输出
+- 使用 `create_agent()` 构建可调用工具的单 Agent
+- 使用中间件增加摘要、人工审批、调用限制、重试和敏感信息处理
+- 使用 Checkpointer、Store 和 Runtime Context 管理上下文与记忆
+- 使用 LangSmith 跟踪、评估和调试模型应用
+
+## 3. 学习顺序
 
 ```mermaid
 flowchart LR
-    A["Pydantic 前置"] --> B["LangChain 核心"]
-    B --> C["工具与 Agent"]
-    C --> D["Memory 与生产控制"]
-D --> E["LangGraph"]
-E --> F["调试与评测"]
+    Z["01 LangChain 概述"] --> A["02 模型"]
+    A --> B["03 LangSmith"]
+    B --> C["04 Message 与 Prompt"]
+    C --> D["05 Tools"]
+    D --> E["06 结构化输出"]
+    E --> F["07 智能体"]
+    F --> G["08 中间件"]
+    G --> H["09 上下文与记忆"]
 ```
 
-## 4. 课程清单
+03 LangSmith 也可以在完成 07 Agent 后复习。把它放在前面，是为了从第一段模型代码开始就建立 Trace 意识。
 
-### 第一部分：前置知识与 LangChain 核心
+## 4. 课程目录
 
-#### [x] 01 Pydantic 基础
+### [01 LangChain 概述](01-LangChain概述.md)
 
-- 笔记：[01-Pydantic基础.md](01-Pydantic基础.md)
-- 实践：合并到 `practice/Agent开发实战/01-langchain-basics`
-- 内容：`BaseModel`、`Field`、数据校验、序列化、错误处理、LangChain 结构化输出
-- 目标：能够看懂并编写大模型结构化输入输出 Schema
+- 来源：`尚硅谷-01-LangChain概述.pdf`
+- 内容：框架定位、1.x 包结构、生态关系、开发环境以及 Prompt、Agent、RAG、微调的技术选型
+- 目标：建立 LangChain 全局认识，明确本阶段范围和学习顺序
 
-#### [x] 02 LangChain 基础
+### [02 模型的创建与调用](02-模型的创建与调用.md)
 
-- 笔记：[02-LangChain基础.md](02-LangChain基础.md)
-- 实践：[practice/Agent开发实战/01-langchain-basics](../../practice/Agent开发实战/01-langchain-basics/README.md)
-- 内容：ChatModel、Messages、Prompt Template、基础 Runnable、Structured Output
-- 目标：理解 LangChain 如何封装原生模型调用，以及数据如何在组件间流动
+- 来源：`尚硅谷-02-模型的创建与调用.pdf`
+- 内容：模型初始化、在线/本地模型、配置管理、`invoke`、`stream`、`batch`、异步调用、`AIMessage`、模型参数和 Runnable Config
+- 目标：建立统一的 ChatModel 调用入口
 
-#### [x] 03 Runnable 与 LCEL 深入
+### [03 LangSmith 的使用](03-LangSmith的使用.md)
 
-- 笔记：[03-Runnable与LCEL深入.md](03-Runnable与LCEL深入.md)
-- 实践：[practice/Agent开发实战/02-langchain-runnables](../../practice/Agent开发实战/02-langchain-runnables/README.md)
-- 内容：`RunnableSequence`、`RunnableLambda`、`RunnablePassthrough`、并行、分支、透传、批量、流式、异步、重试和 fallback
-- 目标：能够使用 LCEL 构建可组合、可测试的多步骤处理链
+- 来源：`尚硅谷-03-LangSmith的使用.pdf`
+- 内容：Tracing、Dataset、Experiment、Evaluator、人工标注和生产可观测性
+- 目标：能定位一次 LLM 调用经过了什么、为何失败、耗时和成本是多少
 
-### 第二部分：工具与 LangChain Agent
+### [04 Message 与提示词模板](04-Message与提示词模板.md)
 
-#### [x] 04 LangChain Tools
+- 来源：`尚硅谷-04-Message与提示词模板.pdf`
+- 内容：消息类型、消息内容块、`ChatPromptTemplate`、`MessagesPlaceholder`、变量、Partial 和模板组合
+- 目标：用结构化消息和模板可靠组织模型上下文
 
-- 笔记：[04-LangChainTools.md](04-LangChainTools.md)
-- 实践：[practice/Agent开发实战/03-langchain-tools](../../practice/Agent开发实战/03-langchain-tools/README.md)
-- 内容：`@tool`、工具参数 Schema、`bind_tools()`、`ToolMessage`、工具执行器和错误结果
-- 目标：把已经掌握的原生 Tool Calling 映射到 LangChain 工具抽象
+### [05 Tools](05-Tools.md)
 
-#### [x] 05 LangChain Agent
+- 来源：`尚硅谷-05-Tools.pdf`
+- 内容：`@tool`、工具描述、参数 Schema、`bind_tools()`、`AIMessage.tool_calls`、`ToolMessage`、多工具和 `tool_choice`
+- 目标：理解模型提出工具调用、应用执行并回传结果的完整链路
 
-- 笔记：[05-LangChainAgent.md](05-LangChainAgent.md)
-- 实践：[practice/Agent开发实战/04-langchain-agent](../../practice/Agent开发实战/04-langchain-agent/README.md)
-- 内容：`create_agent`、Agent 执行循环、系统提示词、工具选择、结构化响应和终止条件
-- 目标：使用 LangChain 构建能够自主选择并调用工具的单 Agent
+### [06 结构化输出](06-结构化输出.md)
 
-#### [x] 06 上下文与 Memory
+- 来源：`尚硅谷-06-结构化输出.pdf`
+- 内容：Pydantic、TypedDict、JSON Schema、dataclass、`with_structured_output()`、`method`、`include_raw` 和 Output Parser
+- 目标：把模型自然语言结果转换为可校验的业务数据
 
-- 笔记：[06-上下文与Memory.md](06-上下文与Memory.md)
-- 实践：[practice/Agent开发实战/05-langchain-memory](../../practice/Agent开发实战/05-langchain-memory/README.md)
-- 内容：短期记忆、会话隔离、上下文窗口、消息裁剪、历史摘要和 Checkpointer 基础
-- 目标：让 Agent 在多轮对话中保持连续状态，同时控制 token 消耗
+### [07 智能体](07-智能体.md)
 
-#### [x] 07 生产级工具集成
+- 来源：`尚硅谷-07-智能体.pdf`
+- 内容：Agent 组成、`create_agent()`、工具循环、System Prompt、Agent 名称、结构化响应策略和流式模式
+- 目标：构建能够根据工具结果持续决定下一步的单 Agent
 
-- 笔记：[07-生产级工具集成.md](07-生产级工具集成.md)
-- 实践：[practice/Agent开发实战/06-production-tools](../../practice/Agent开发实战/06-production-tools/README.md)
-- 内容：搜索工具、SQL 查询、文件操作、HTTP API 和自定义业务工具
-- 目标：掌握图中要求的主要工具类型，并建立统一工具返回协议
+### [08 中间件](08-中间件.md)
 
-#### [x] 08 Agent 安全与中间件
+- 来源：`尚硅谷-08-中间件.pdf`
+- 内容：摘要、人工审核、PII、Todo、调用上限、Fallback、工具筛选、重试、上下文清理、文件/Shell 能力、自定义 Hook 和执行顺序
+- 目标：为 Agent 增加可观察、可限制、可中断和可恢复的工程控制
 
-- 笔记：[08-Agent安全与中间件.md](08-Agent安全与中间件.md)
-- 实践：[practice/Agent开发实战/07-agent-middleware](../../practice/Agent开发实战/07-agent-middleware/README.md)
-- 内容：动态 System Prompt、调用前后钩子、权限、幂等、超时重试、调用上限、敏感信息处理和人工确认
-- 目标：明确大模型、Agent 编排层和业务服务各自负责的安全边界
+### [09 上下文与记忆](09-上下文与记忆.md)
 
-提示词优化不会在这里重新讲一遍完整理论。已经学习过的 System Prompt、Few-shot、输出格式和错误处理 Prompt，会在 04、06、07 课中直接应用。
+- 来源：`尚硅谷-09-上下文与记忆.pdf`
+- 内容：State、Checkpointer、`thread_id`、消息治理、`RemoveMessage`、长期 Store、语义检索、ToolRuntime 和 Runtime Context
+- 目标：正确管理线程内状态、跨线程记忆和可信运行信息
 
-RAG 已拆分为独立学习路径：[RAG 开发实战](../RAG开发实战/README.md)，对应代码练习位于 `practice/RAG开发实战/`。
+## 5. 课件外补充篇
 
-### 第三部分：LangGraph 单 Agent 工作流
+以下内容来自原有学习笔记中课件 01-09 没有完整覆盖的部分，已经按当前版本重新整理。它们不是旧笔记的原样恢复。
 
-#### [x] 09 LangGraph 基础
+### [00 Pydantic 前置知识](00-Pydantic前置知识.md)
 
-- 笔记：[09-LangGraph基础.md](09-LangGraph基础.md)
-- 实践：[practice/Agent开发实战/08-langgraph-basics](../../practice/Agent开发实战/08-langgraph-basics/README.md)
-- 内容：State、Node、Edge、条件边、编译和执行
-- 目标：理解 LangChain Agent 底层的图工作流表达方式
+- 建议位置：第 06 章结构化输出之前
+- 内容：运行时校验、`Field`、嵌套模型、严格模式、序列化、自定义校验器和模型分层
+- 保留原因：课件直接使用 Pydantic，但没有系统讲其基础和业务边界
 
-#### [x] 10 LangGraph 进阶流程
+### [10 Runnable 与 LCEL 深入](10-Runnable与LCEL深入.md)
 
-- 笔记：[10-LangGraph进阶流程.md](10-LangGraph进阶流程.md)
-- 实践：[practice/Agent开发实战/09-langgraph-workflow](../../practice/Agent开发实战/09-langgraph-workflow/README.md)
-- 内容：循环、并行、路由、子图、错误分支和失败恢复
-- 目标：将复杂任务从线性 Chain 改造成状态明确、路径可控的工作流
+- 建议位置：第 04 章 Message 与提示词模板之后
+- 内容：Sequence、Lambda、Parallel、Passthrough、Assign、Branch、Batch、Async、Stream、Retry 和 Fallback
+- 保留原因：Runnable 是 LangChain 的统一组合协议，课件只在示例中使用，没有完整展开
 
-#### [x] 11 持久化与人工介入
+### [11 生产级工具集成](11-生产级工具集成.md)
 
-- 笔记：[11-持久化与人工介入.md](11-持久化与人工介入.md)
-- 实践：[practice/Agent开发实战/10-langgraph-persistence](../../practice/Agent开发实战/10-langgraph-persistence/README.md)
-- 内容：Checkpoint、线程状态、暂停和恢复、Human-in-the-loop、危险操作审批
-- 目标：构建能够中断、确认、恢复执行的生产级单 Agent 流程
+- 建议位置：第 05 章 Tools 之后
+- 内容：Tool Adapter、参数/权限/业务三层校验、SQL、文件、HTTP、未知状态和稳定错误协议
+- 保留原因：课件重点是 Tool Calling，未完整覆盖真实后端集成风险
 
-LangGraph 在本阶段只用于单 Agent 的状态和工作流控制，不扩展到多 Agent 协作。
+### [12 Agent 安全与业务边界](12-Agent安全与业务边界.md)
 
-### 第四部分：工程化与评测
+- 建议位置：第 08 章中间件之后
+- 内容：信任边界、直接/间接提示词注入、Tool Allowlist、租户隔离、幂等、人工审批、SSRF、文件和 Shell 安全
+- 保留原因：Middleware 是控制入口，但生产安全最终需要业务服务和基础设施共同保证
 
-#### [x] 12 调试、评测与性能优化
+### [13 调试、评测与性能优化](13-调试评测与性能优化.md)
 
-- 笔记：[12-调试评测与性能优化.md](12-调试评测与性能优化.md)
-- 实践：[practice/Agent开发实战/11-agent-evaluation](../../practice/Agent开发实战/11-agent-evaluation/README.md)
-- 内容：结构化日志、LangSmith Trace、中间步骤可视化、错误分类、测试集、准确率、延迟、token 和费用
-- 目标：能够解释 Agent 为什么失败，并通过数据而不是感觉优化效果
+- 建议位置：第 09 章完成之后
+- 内容：测试分层、评测集、答案/Tool/流程/安全指标、LLM Judge、A/B、灰度、Token、延迟和成本优化
+- 保留原因：LangSmith 课件讲平台能力，本篇补充完整工程闭环
 
-## 5. 阶段边界
-
-完成第 12 课以后，再单独规划后续主题：
-
-- 多 Agent 架构与适用条件
-- Supervisor、Router、Swarm 等协作模式
-- Agent 间任务、上下文和权限隔离
-- AutoGPT、MetaGPT 等框架的设计比较
-- 多 Agent 的通信、死循环、成本和评测
-
-这些内容不会提前混入当前单 Agent 学习路径。
-
-## 6. 当前进度
+推荐学习插入顺序：
 
 ```text
-已完成：01 Pydantic 基础
-已完成：02-08 LangChain、Tools、Agent、Memory 与安全
-已完成：09-12 LangGraph 与工程化评测
-RAG 学习路径：已独立到 notes/RAG开发实战
+01 -> 02 -> 03 -> 04
+-> 10 Runnable 与 LCEL
+-> 05 Tools
+-> 11 生产级工具集成
+-> 00 Pydantic 前置
+-> 06 -> 07 -> 08
+-> 12 Agent 安全与业务边界
+-> 09
+-> 13 调试、评测与性能优化
+```
+
+## 6. 学习方式
+
+每一课建议按下面顺序学习：
+
+```text
+阅读笔记，建立概念和数据流
+-> 手动运行最小示例
+-> 阅读对应 practice 的串联测试
+-> 使用真实模型执行端到端场景
+-> 修改输入观察 Trace、消息和状态变化
+-> 补充失败、边界与生产控制测试
+```
+
+不要只看最终回答。学习 Agent 时应同时观察：
+
+- 发送给模型的消息
+- 模型返回的 `tool_calls`
+- 工具的真实输入和输出
+- Agent State 的变化
+- 中间件触发顺序
+- Trace 中的耗时、Token 和错误
+
+## 7. 与 Practice 的关系
+
+当前阶段先完成笔记重建，`practice/Agent开发实战` 尚未按 01-09 课件重新整理。因此旧实践目录中的 README 链接和编号可能暂时与本目录不一致。
+
+下一阶段再处理实践代码，原则是：
+
+- 每份课件至少有一个可运行的串联 Case
+- 示例使用 Python 3.11 和当前 `uv workspace`
+- 模型能力使用真实 API 端到端验证
+- 单元测试用于定位组件问题，不代替完整流程测试
+- 不把 API Key 写入源码、笔记或 Git
+
+## 8. 阶段边界
+
+本目录聚焦 LangChain 单 Agent 基础和工程控制，不展开：
+
+- RAG：已拆分到 [RAG 开发实战](../RAG开发实战/README.md)
+- 多 Agent：后续独立规划
+- MCP：后续独立学习
+
+## 9. 当前进度
+
+```text
+笔记：01-09 已按 PDF 重建
+补充：00、10-13 已从旧笔记独有内容重新整理
+Practice：待按新笔记结构重新整理
+RAG：独立学习路径
+LangGraph、多 Agent：未纳入本阶段
 ```

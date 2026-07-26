@@ -11,7 +11,6 @@
 - Tool Calling
 - Memory
 - RAG
-- LangGraph
 - MCP
 - Agent 工程化与评测
 
@@ -41,18 +40,20 @@
 ### Agent 开发实战
 
 - [Agent 开发实战学习路径](notes/Agent开发实战/README.md)
-- [01 Pydantic 基础：让外部数据变成可靠对象](notes/Agent开发实战/01-Pydantic基础.md)
-- [02 LangChain 基础：从原生调用到可组合链](notes/Agent开发实战/02-LangChain基础.md)
-- [03 Runnable 与 LCEL 深入](notes/Agent开发实战/03-Runnable与LCEL深入.md)
-- [04 LangChain Tools](notes/Agent开发实战/04-LangChainTools.md)
-- [05 LangChain Agent](notes/Agent开发实战/05-LangChainAgent.md)
-- [06 上下文与 Memory](notes/Agent开发实战/06-上下文与Memory.md)
-- [07 生产级工具集成](notes/Agent开发实战/07-生产级工具集成.md)
-- [08 Agent 安全与中间件](notes/Agent开发实战/08-Agent安全与中间件.md)
-- [09 LangGraph 基础](notes/Agent开发实战/09-LangGraph基础.md)
-- [10 LangGraph 进阶流程](notes/Agent开发实战/10-LangGraph进阶流程.md)
-- [11 持久化与人工介入](notes/Agent开发实战/11-持久化与人工介入.md)
-- [12 调试、评测与性能优化](notes/Agent开发实战/12-调试评测与性能优化.md)
+- [00 Pydantic 前置知识](notes/Agent开发实战/00-Pydantic前置知识.md)
+- [01 LangChain 概述](notes/Agent开发实战/01-LangChain概述.md)
+- [02 模型的创建与调用](notes/Agent开发实战/02-模型的创建与调用.md)
+- [03 LangSmith 的使用](notes/Agent开发实战/03-LangSmith的使用.md)
+- [04 Message 与提示词模板](notes/Agent开发实战/04-Message与提示词模板.md)
+- [05 Tools](notes/Agent开发实战/05-Tools.md)
+- [06 结构化输出](notes/Agent开发实战/06-结构化输出.md)
+- [07 智能体](notes/Agent开发实战/07-智能体.md)
+- [08 中间件](notes/Agent开发实战/08-中间件.md)
+- [09 上下文与记忆](notes/Agent开发实战/09-上下文与记忆.md)
+- [10 Runnable 与 LCEL 深入](notes/Agent开发实战/10-Runnable与LCEL深入.md)
+- [11 生产级工具集成](notes/Agent开发实战/11-生产级工具集成.md)
+- [12 Agent 安全与业务边界](notes/Agent开发实战/12-Agent安全与业务边界.md)
+- [13 调试、评测与性能优化](notes/Agent开发实战/13-调试评测与性能优化.md)
 
 ### RAG 开发实战
 
