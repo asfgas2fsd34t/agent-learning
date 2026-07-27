@@ -1,4 +1,4 @@
-# 练习 05：LangChain 基础
+# 练习 01：LangChain 基础
 
 这个练习把原生模型调用改写为 LangChain 的基础组件，范围包括：
 
@@ -8,7 +8,7 @@
 - Runnable 的 `|` 组合
 - Pydantic 结构化输出
 
-对应笔记：[02 LangChain 基础](../../../notes/Agent开发实战/02-LangChain基础.md)
+对应笔记：[00 Pydantic 前置知识](../../../notes/Agent开发实战/00-Pydantic前置知识.md)、[01 LangChain 概述](../../../notes/Agent开发实战/01-LangChain概述.md)、[02 模型的创建与调用](../../../notes/Agent开发实战/02-模型的创建与调用.md)、[04 Message 与提示词模板](../../../notes/Agent开发实战/04-Message与提示词模板.md)、[06 结构化输出](../../../notes/Agent开发实战/06-结构化输出.md)
 
 ## 安装依赖
 

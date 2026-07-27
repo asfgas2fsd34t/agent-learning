@@ -175,9 +175,9 @@ flowchart LR
 
 ## 7. 与 Practice 的关系
 
-当前阶段先完成笔记重建，`practice/Agent开发实战` 尚未按 01-09 课件重新整理。因此旧实践目录中的 README 链接和编号可能暂时与本目录不一致。
+`practice/Agent开发实战` 已按当前笔记体系重新整理。主线 practice 使用 01-09 编号，并通过 README 明确一个练习覆盖哪些 note；LangGraph 练习保留为 10-12 的补充专题。
 
-下一阶段再处理实践代码，原则是：
+实践代码遵循以下原则：
 
 - 每份课件至少有一个可运行的串联 Case
 - 示例使用 Python 3.11 和当前 `uv workspace`
@@ -198,7 +198,7 @@ flowchart LR
 ```text
 笔记：01-09 已按 PDF 重建
 补充：00、10-13 已从旧笔记独有内容重新整理
-Practice：待按新笔记结构重新整理
+Practice：主线 01-09 已按新笔记结构整理，LangGraph 为补充 10-12
 RAG：独立学习路径
-LangGraph、多 Agent：未纳入本阶段
+LangGraph：补充专题；多 Agent：后续独立规划
 ```

@@ -1,4 +1,4 @@
-# 练习 06：Runnable 与 LCEL 深入
+# 练习 03：Runnable 与 LCEL 深入
 
 本练习使用一条真实可执行的自适应摘要链，练习：
 
@@ -9,7 +9,7 @@
 - `RunnableSequence`
 - `invoke()`、`batch()`、`stream()`
 
-对应笔记：[03 Runnable 与 LCEL 深入](../../../notes/Agent开发实战/03-Runnable与LCEL深入.md)
+对应笔记：[10 Runnable 与 LCEL 深入](../../../notes/Agent开发实战/10-Runnable与LCEL深入.md)
 
 ## 安装依赖
 
@@ -34,7 +34,7 @@ LLM_BASE_URL=OpenAI-compatible 接口地址
 进入练习目录：
 
 ```powershell
-cd practice/Agent开发实战/02-langchain-runnables
+cd practice/Agent开发实战/03-langchain-runnables
 ```
 
 单条自适应摘要：

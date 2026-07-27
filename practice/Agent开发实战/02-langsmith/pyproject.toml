@@ -1,0 +1,20 @@
+[project]
+name = "langsmith-practice"
+version = "0.1.0"
+description = "Agent learning practice: LangSmith tracing configuration"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "langchain-core>=1.4,<2",
+    "langsmith>=0.10,<1",
+    "python-dotenv>=1.0.0",
+]
+
+[project.scripts]
+langsmith-practice = "langsmith_practice.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
