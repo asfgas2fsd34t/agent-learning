@@ -11,6 +11,7 @@
 - Tool Calling
 - Memory
 - RAG
+- LangGraph
 - MCP
 - Agent 工程化与评测
 
@@ -37,29 +38,46 @@
 - [Agent 基础四模块面试题](notes/Agent基础/Agent基础四模块面试题.md)
 - [Agent 基础四模块面试标准答案](notes/Agent基础/Agent基础四模块面试标准答案.md)
 
-### Agent 开发实战
+### LangChain 开发实战
 
-- [Agent 开发实战学习路径](notes/Agent开发实战/README.md)
-- [00 Pydantic 前置知识](notes/Agent开发实战/00-Pydantic前置知识.md)
-- [01 LangChain 概述](notes/Agent开发实战/01-LangChain概述.md)
-- [02 模型的创建与调用](notes/Agent开发实战/02-模型的创建与调用.md)
-- [03 LangSmith 的使用](notes/Agent开发实战/03-LangSmith的使用.md)
-- [04 Message 与提示词模板](notes/Agent开发实战/04-Message与提示词模板.md)
-- [05 Tools](notes/Agent开发实战/05-Tools.md)
-- [06 结构化输出](notes/Agent开发实战/06-结构化输出.md)
-- [07 智能体](notes/Agent开发实战/07-智能体.md)
-- [08 中间件](notes/Agent开发实战/08-中间件.md)
-- [09 上下文与记忆](notes/Agent开发实战/09-上下文与记忆.md)
-- [10 Runnable 与 LCEL 深入](notes/Agent开发实战/10-Runnable与LCEL深入.md)
-- [11 生产级工具集成](notes/Agent开发实战/11-生产级工具集成.md)
-- [12 Agent 安全与业务边界](notes/Agent开发实战/12-Agent安全与业务边界.md)
-- [13 调试、评测与性能优化](notes/Agent开发实战/13-调试评测与性能优化.md)
+- [LangChain 开发实战学习路径](notes/LangChain开发实战/README.md)
+- [00 Pydantic 前置知识](notes/LangChain开发实战/00-Pydantic前置知识.md)
+- [01 LangChain 概述](notes/LangChain开发实战/01-LangChain概述.md)
+- [02 模型的创建与调用](notes/LangChain开发实战/02-模型的创建与调用.md)
+- [03 LangSmith 的使用](notes/LangChain开发实战/03-LangSmith的使用.md)
+- [04 Message 与提示词模板](notes/LangChain开发实战/04-Message与提示词模板.md)
+- [05 Tools](notes/LangChain开发实战/05-Tools.md)
+- [06 结构化输出](notes/LangChain开发实战/06-结构化输出.md)
+- [07 智能体](notes/LangChain开发实战/07-智能体.md)
+- [08 中间件](notes/LangChain开发实战/08-中间件.md)
+- [09 上下文与记忆](notes/LangChain开发实战/09-上下文与记忆.md)
+- [10 Runnable 与 LCEL 深入](notes/LangChain开发实战/10-Runnable与LCEL深入.md)
+- [11 生产级工具集成](notes/LangChain开发实战/11-生产级工具集成.md)
+- [12 Agent 安全与业务边界](notes/LangChain开发实战/12-Agent安全与业务边界.md)
+- [13 调试、评测与性能优化](notes/LangChain开发实战/13-调试评测与性能优化.md)
 
 ### RAG 开发实战
 
 - [RAG 开发实战学习路径](notes/RAG开发实战/README.md)
 - [01 RAG 基础概念与核心组件](notes/RAG开发实战/01-RAG基础概念与核心组件.md)
 - [02 RAG 技术实现](notes/RAG开发实战/02-RAG技术实现.md)
+
+### LangGraph 开发实战
+
+- [LangGraph 开发实战学习路径](notes/LangGraph开发实战/README.md)
+- [01 LangGraph 总览](notes/LangGraph开发实战/01-LangGraph总览.md)
+- [02 图的基础构建与运行](notes/LangGraph开发实战/02-图的基础构建与运行.md)
+- [03 图的状态管理](notes/LangGraph开发实战/03-图的状态管理.md)
+- [04 控制流](notes/LangGraph开发实战/04-控制流.md)
+- [05 节点执行与容错机制](notes/LangGraph开发实战/05-节点执行与容错机制.md)
+- [06 持久化机制与可恢复执行](notes/LangGraph开发实战/06-持久化机制与可恢复执行.md)
+- [07 图记忆管理](notes/LangGraph开发实战/07-图记忆管理.md)
+- [08 中断](notes/LangGraph开发实战/08-中断.md)
+- [09 项目部署](notes/LangGraph开发实战/09-项目部署.md)
+- [10 工具调用节点](notes/LangGraph开发实战/10-工具调用节点.md)
+- [11 流式执行](notes/LangGraph开发实战/11-流式执行.md)
+- [12 子图](notes/LangGraph开发实战/12-子图.md)
+- [13 运行图设计模式](notes/LangGraph开发实战/13-运行图设计模式.md)
 
 ### 后端基础
 
@@ -68,7 +86,8 @@
 ## 编程实践
 
 - [基础接口与原生机制](practice/基础接口/README.md)
-- [Agent 开发实战](practice/Agent开发实战/README.md)
+- [LangChain 开发实战](practice/LangChain开发实战/README.md)
+- [LangGraph 开发实战](practice/LangGraph开发实战/README.md)
 - [RAG 编程实践目录](practice/RAG开发实战/README.md)
 
 所有编程练习通过 `uv workspace` 共用根目录的 Python 3.11 虚拟环境和依赖锁文件：
