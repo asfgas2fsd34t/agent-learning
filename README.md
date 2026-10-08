@@ -97,6 +97,7 @@
 - [12 MCP](notes/SpringAI开发实战/12-MCP.md)
 - [13 MCP Client Boot Starter](notes/SpringAI开发实战/13-MCP-Client-Boot-Starter.md)
 - [14 构建 MCP Server](notes/SpringAI开发实战/14-构建MCP-Server.md)
+- [15 RAG](notes/SpringAI开发实战/15-RAG.md)
 
 ### 后端基础
 

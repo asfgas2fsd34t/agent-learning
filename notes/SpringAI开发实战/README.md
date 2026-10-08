@@ -21,6 +21,7 @@
 12 MCP（Model Context Protocol）
 13 MCP Client Boot Starter
 14 构建 MCP Server
+15 RAG（检索增强生成）
 ```
 
 ## 2. 学习目标
@@ -53,6 +54,7 @@
 | 12 | api/mcp/ 章节 | MCP 架构、Starter、注解、Client 特性 |
 | 13 | api/mcp/mcp-client-boot-starter-docs.html | Client Starter 配置与四大扩展点 |
 | 14 | mcp-server-boot-starter + mcp-annotations-server | 构建 MCP Server 五步法与四类注解 |
+| 15 | retrieval-augmented-generation + etl-pipeline | RAG 两半闭环与四阶段模块 |
 
 ## 4. 学习方法
 
