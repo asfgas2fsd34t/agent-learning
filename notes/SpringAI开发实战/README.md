@@ -18,6 +18,7 @@
 09 工具调用（Tool Calling）
 10 概念问答集
 11 实战案例集
+12 MCP（Model Context Protocol）
 ```
 
 ## 2. 学习目标
@@ -47,6 +48,7 @@
 | 09 | api/tools.html | @Tool 三种定义、三种执行模式 |
 | 10 | 学习过程问答 | 概念辨析（BaseAdvisor、generations、泛型擦除等） |
 | 11 | 学习过程产出 | 完整可运行案例代码集 |
+| 12 | api/mcp/ 章节 | MCP 架构、Starter、注解、Client 特性 |
 
 ## 4. 学习方法
 

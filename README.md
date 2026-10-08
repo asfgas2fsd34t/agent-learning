@@ -94,6 +94,7 @@
 - [09 工具调用（Tool Calling）](notes/SpringAI开发实战/09-工具调用ToolCalling.md)
 - [10 概念问答集](notes/SpringAI开发实战/10-概念问答集.md)
 - [11 实战案例集](notes/SpringAI开发实战/11-实战案例集.md)
+- [12 MCP](notes/SpringAI开发实战/12-MCP.md)
 
 ### 后端基础
 
