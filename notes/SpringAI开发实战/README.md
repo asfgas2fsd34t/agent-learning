@@ -20,6 +20,7 @@
 11 实战案例集
 12 MCP（Model Context Protocol）
 13 MCP Client Boot Starter
+14 构建 MCP Server
 ```
 
 ## 2. 学习目标
@@ -51,6 +52,7 @@
 | 11 | 学习过程产出 | 完整可运行案例代码集 |
 | 12 | api/mcp/ 章节 | MCP 架构、Starter、注解、Client 特性 |
 | 13 | api/mcp/mcp-client-boot-starter-docs.html | Client Starter 配置与四大扩展点 |
+| 14 | mcp-server-boot-starter + mcp-annotations-server | 构建 MCP Server 五步法与四类注解 |
 
 ## 4. 学习方法
 
