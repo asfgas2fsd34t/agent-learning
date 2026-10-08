@@ -22,6 +22,7 @@
 13 MCP Client Boot Starter
 14 构建 MCP Server
 15 RAG（检索增强生成）
+16 可观测性（监控）
 ```
 
 ## 2. 学习目标
@@ -55,6 +56,7 @@
 | 13 | api/mcp/mcp-client-boot-starter-docs.html | Client Starter 配置与四大扩展点 |
 | 14 | mcp-server-boot-starter + mcp-annotations-server | 构建 MCP Server 五步法与四类注解 |
 | 15 | retrieval-augmented-generation + etl-pipeline | RAG 两半闭环与四阶段模块 |
+| 16 | observability/index.html | Micrometer 指标与追踪埋点 |
 
 ## 4. 学习方法
 
