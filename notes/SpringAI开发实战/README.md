@@ -19,6 +19,7 @@
 10 概念问答集
 11 实战案例集
 12 MCP（Model Context Protocol）
+13 MCP Client Boot Starter
 ```
 
 ## 2. 学习目标
@@ -49,6 +50,7 @@
 | 10 | 学习过程问答 | 概念辨析（BaseAdvisor、generations、泛型擦除等） |
 | 11 | 学习过程产出 | 完整可运行案例代码集 |
 | 12 | api/mcp/ 章节 | MCP 架构、Starter、注解、Client 特性 |
+| 13 | api/mcp/mcp-client-boot-starter-docs.html | Client Starter 配置与四大扩展点 |
 
 ## 4. 学习方法
 
