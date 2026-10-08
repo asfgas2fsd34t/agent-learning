@@ -23,6 +23,7 @@
 14 构建 MCP Server
 15 RAG（检索增强生成）
 16 可观测性（监控）
+17 Spring AI 2.0 变动速览
 ```
 
 ## 2. 学习目标
@@ -57,6 +58,7 @@
 | 14 | mcp-server-boot-starter + mcp-annotations-server | 构建 MCP Server 五步法与四类注解 |
 | 15 | retrieval-augmented-generation + etl-pipeline | RAG 两半闭环与四阶段模块 |
 | 16 | observability/index.html | Micrometer 指标与追踪埋点 |
+| 17 | upgrade-notes + Release Notes | 2.0 破坏性变更与新能力 |
 
 ## 4. 学习方法
 

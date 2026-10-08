@@ -99,6 +99,7 @@
 - [14 构建 MCP Server](notes/SpringAI开发实战/14-构建MCP-Server.md)
 - [15 RAG](notes/SpringAI开发实战/15-RAG.md)
 - [16 可观测性](notes/SpringAI开发实战/16-可观测性.md)
+- [17 Spring AI 2.0 变动速览](notes/SpringAI开发实战/17-SpringAI-2.0变动速览.md)
 
 ### 后端基础
 
