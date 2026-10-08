@@ -12,6 +12,7 @@
 - Memory
 - RAG
 - LangGraph
+- Spring AI
 - MCP
 - Agent 工程化与评测
 
@@ -78,6 +79,21 @@
 - [11 流式执行](notes/LangGraph开发实战/11-流式执行.md)
 - [12 子图](notes/LangGraph开发实战/12-子图.md)
 - [13 运行图设计模式](notes/LangGraph开发实战/13-运行图设计模式.md)
+
+### Spring AI 开发实战
+
+- [Spring AI 开发实战学习路径](notes/SpringAI开发实战/README.md)
+- [01 ChatClient 流式 API](notes/SpringAI开发实战/01-ChatClient流式API.md)
+- [02 Advisor 体系](notes/SpringAI开发实战/02-Advisor体系.md)
+- [03 递归 Advisor](notes/SpringAI开发实战/03-递归Advisor.md)
+- [04 Prompt 与 Message](notes/SpringAI开发实战/04-Prompt与Message.md)
+- [05 结构化输出](notes/SpringAI开发实战/05-结构化输出.md)
+- [06 多模态](notes/SpringAI开发实战/06-多模态.md)
+- [07 ChatModel API 总览](notes/SpringAI开发实战/07-ChatModel-API总览.md)
+- [08 聊天记忆](notes/SpringAI开发实战/08-聊天记忆.md)
+- [09 工具调用（Tool Calling）](notes/SpringAI开发实战/09-工具调用ToolCalling.md)
+- [10 概念问答集](notes/SpringAI开发实战/10-概念问答集.md)
+- [11 实战案例集](notes/SpringAI开发实战/11-实战案例集.md)
 
 ### 后端基础
 
